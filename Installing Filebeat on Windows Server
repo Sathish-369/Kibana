@@ -1,0 +1,30 @@
+Installing Filebeat on Windows Server
+
+Follow these steps to install Filebeat on a Windows Server:
+
+Download or Copy Filebeat:Download or copy the Filebeat installation file from another server.
+
+Extract Files:Extract the downloaded file to C:\\Program Files.
+
+Open Command Prompt with Admin Rights:Open the Command Prompt with administrative privileges.
+
+Navigate to Filebeat Directory:Go to the Filebeat installation directory by executing the command:
+
+cd C:\\Program Files\\Filebeatxxxxxxxxx
+
+Run Installation Script:Run the installation script by executing the command:
+
+.\\install-service-filebeat.ps1
+
+If script execution is disabled, use the following command instead:
+
+PowerShell.exe -ExecutionPolicy UnRestricted -File .\\install-service-filebeat.ps1
+
+Verify Installation:Filebeat is now installed as a Windows background service. Now you can able to see the status, name, and DisplayName, after the above command execution. 
+
+
+Check Filebeat Status:Ensure that Filebeat is running as a background service by executing the following command:
+
+sc query filebeat
+
+This command will provide details about the Filebeat service, confirming its successful operation.
