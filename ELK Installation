@@ -1,0 +1,100 @@
+Prerequisites:
+
+    Root user: Ensure that you have root user privileges for the server.
+
+    Java Installation: Java should be installed on the server. If not, use the following commands to install the default Java Runtime Environment (JRE):
+
+        apt update
+
+        apt install default-jre
+
+Elasticsearch Installation:
+
+    Get the Elasticsearch Key:
+    Get the key from Elasticsearch to start the installation:
+
+        wget -qO - <https://artifacts.elastic.co/GPG-KEY-elasticsearch> | apt-key add -
+
+    Create Repository:
+    Create the repo configuration for Elasticsearch:
+
+        sudo sh -c 'echo "deb <https://artifacts.elastic.co/packages/7.x/apt> stable main" > /etc/apt/sources.list.d/elastic-7.x.list'
+
+    Install Elasticsearch:
+    Complete the Elasticsearch installation:
+
+        apt update
+
+        apt install elasticsearch
+
+    Verify Elasticsearch Installation:
+    Ensure Elasticsearch is installed by checking the following ports:
+
+        netstat -tulpn
+
+        Ports should default to 9200-9300.
+
+    Start and Enable Elasticsearch:
+
+        systemctl start elasticsearch
+
+        systemctl enable elasticsearch
+
+Logstash Installation:
+
+    Install Logstash:
+    Install Logstash for processing and transforming logs:
+
+        apt install logstash
+
+Kibana Installation:
+
+    Configure Repository for Kibana:
+
+        sudo sh -c 'echo "deb <https://artifacts.elastic.co/packages/7.x/apt> stable main" > /etc/apt/sources.list.d/elastic-7.x.list'
+
+    Install Kibana:
+
+        apt install kibana
+
+    Verify Kibana Installation:
+    Confirm the installation by checking for port 5601:
+
+        netstat -tulpn
+
+    Start and Enable Kibana:
+
+        systemctl start kibana
+
+        systemctl enable kibana
+
+    Access Kibana in the Browser:
+    Open a web browser and navigate to:
+
+        Kibana: http://localhost:5601
+
+             
+
+        Elasticsearch: http://localhost:9200
+
+Troubleshooting:
+
+    Check IP Configuration:
+    If services are not exposed in the browser, identify the IP configuration by checking the Elasticsearch YAML file:
+
+        /etc/kibana/kibana.yml
+
+        Look for server.host: "0.0.0.0"and modify it to your host IP.
+
+    Modify Kibana Service Configuration:
+    To resolve IP-related issues, change the configuration in the Kibana service file:
+
+        /etc/systemd/system/kibana.service
+
+        Update ExecStart to:
+
+            ExecStart=/usr/share/kibana/bin/kibana --host=0.0.0.0 --logging.dest="/var/log/kibana/kibana.log" --pid.file="/run/kibana/kibana.pid" --deprecation.skip_deprecated_settings[0]="logging.dest"
+
+            Restart Elasticsearch and check the status. If issues persist, try changing it to 
+
+            network.host=0.0.0.0.
