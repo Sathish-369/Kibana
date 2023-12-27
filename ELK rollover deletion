@@ -1,0 +1,45 @@
+ELK rollover deletion Steps::
+
+In our ELK environment, when the storage utilization reaches the watermark flood stage exceeding 90%, Elasticsearch automatically enforces a read-only status on the indices. This action restricts access to log data in Kibana, leading to error messages.
+
+Immediate Steps to Identify and Resolve Issues:
+
+1. Check Storage Utilization:
+    Execute the following command to assess disk usage:
+
+    df -h
+
+    Run this command on the ELK host to get an overview of the storage status.
+
+2. Identify High Consumption Indices:
+    Use the following API to examine individual index sizes, identifying which indices are consuming the most space:
+
+        curl -X GET "<http://localhost:9200/_cat>/indices?v&s=store.size:desc"
+
+         
+
+                              Analyze the output to pinpoint indices with high space consumption.
+                    
+                              **Delete Unnecessary Indices:**
+                              If you find indices holding onto old data and contributing to the storage issue, use the fo
+                              llowing command to delete them:
+                              ```bash
+                              curl -X DELETE "localhost:9200/xxxxxxxxxx"  # Replace xxxxxxxxxx with the index name
+
+   Example:
+curl -X DELETE "localhost:9200/example_index"
+
+   Deleting unnecessary indices frees up space and resolves the storage concern.
+
+3. Verify Storage and ELK Log Access:
+    After deleting indices, check the storage status and ensure access to ELK logs. Confirm that the issue is resolved. -------------------------------------------------------------------------------------------------------------------
+
+4. Resetting Read-Only Indices (If Necessary):
+    In case the problem persists, and indices remain in a read-only state, perform the following steps to reset them:
+
+curl -X PUT "localhost:9200/xxxxxxxxxx/_settings" -H 'Content-Type: application/json' -d '{"settings": {"index.blocks.read_only_allow_delete": null}}'
+
+Example:
+curl -X PUT "localhost:9200/example_index/_settings" -H 'Content-Type: application/json' -d '{"settings": {"index.blocks.read_only_allow_delete": null}}'
+
+Resetting read-only indices ensures normal data flow and access.
